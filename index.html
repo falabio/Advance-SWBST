@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morayo ELA: Advanced SWBST</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .slide-enter { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col overflow-hidden select-none">
+
+    <!-- Top Progress Bar -->
+    <div class="h-2 w-full bg-slate-800">
+        <div id="progress-bar" class="h-full bg-violet-600 transition-all duration-300" style="width: 0%;"></div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col items-center justify-center p-8 text-center relative">
+        <div id="slide-container" class="max-w-4xl w-full space-y-6 slide-enter">
+            <!-- Content injected via JS -->
+        </div>
+    </main>
+
+    <!-- Controls -->
+    <footer class="p-6 bg-slate-950 flex justify-between items-center border-t border-slate-800">
+        <span id="slide-counter" class="text-slate-400 font-mono text-lg font-bold tracking-widest">1 / 36</span>
+        <div class="space-x-4">
+            <button id="btn-prev" class="px-8 py-4 bg-slate-800 hover:bg-slate-700 rounded-xl font-bold text-xl transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                &larr; BACK
+            </button>
+            <button id="btn-next" class="px-8 py-4 bg-violet-600 hover:bg-violet-500 rounded-xl font-bold text-xl transition-colors text-white shadow-lg shadow-violet-900/50">
+                NEXT &rarr;
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        const slides = [
+            { title: "ADVANCED ELA TRAINING", body: "Focus: Abstract Main Idea & Complex SWBST.<br>Target: Morayo.<br>The training wheels are off.", color: "text-violet-400" },
+            { title: "THE SITUATION", body: "You already know the basic SWBST framework. That was for beginners.", color: "text-slate-300" },
+            { title: "LEVELING UP", body: "Today, we apply this framework to 7th and 8th-grade texts. The vocabulary is harder. The stories are complex. The answers are not obvious.", color: "text-white" },
+            { title: "UPGRADE 1: SOMEBODY", body: "In advanced texts, the 'Somebody' is not always a single person.", color: "text-blue-400" },
+            { title: "UPGRADE 1: SOMEBODY", body: "It might be a government, a massive corporation, a specific demographic, or an entire civilization.", color: "text-slate-300" },
+            { title: "UPGRADE 2: WANTED", body: "Advanced characters rarely just want 'a toy' or 'to win a game.'", color: "text-violet-400" },
+            { title: "UPGRADE 2: WANTED", body: "They want abstract concepts: Justice. Equality. Survival. Power. Revenge. Truth. Look beneath the surface.", color: "text-slate-300" },
+            { title: "UPGRADE 3: BUT", body: "The conflict ('But') has layers. It's not just a physical obstacle.", color: "text-red-400" },
+            { title: "UPGRADE 3: BUT", body: "You will face <b>External Conflicts</b> (societal rules, corrupt villains) and <b>Internal Conflicts</b> (fear, pride, ignorance).", color: "text-slate-300" },
+            { title: "UPGRADE 4: SO", body: "The solution ('So') is no longer simple. It usually requires strategy.", color: "text-amber-400" },
+            { title: "UPGRADE 4: SO", body: "Look for the pivot. Did they have to make a painful sacrifice? Did they have to compromise their morals?", color: "text-slate-300" },
+            { title: "UPGRADE 5: THEN", body: "Complex stories rarely have perfect, happy endings.", color: "text-emerald-400" },
+            { title: "UPGRADE 5: THEN", body: "Look for the 'bittersweet' ending. What was the lingering consequence? What was the historical impact?", color: "text-slate-300" },
+            { title: "LET'S TEST THIS", body: "We will now break down a real, advanced historical text: <b>The Radium Girls</b>.", color: "text-white" },
+            { title: "THE RADIUM GIRLS (PART 1)", body: "In the 1920s, hundreds of young women worked in factories painting watch dials with glow-in-the-dark radium paint.", color: "text-slate-400" },
+            { title: "THE RADIUM GIRLS (PART 2)", body: "They wanted to earn a good living and support their families, deeply believing the corporation's lies that the radioactive paint was perfectly safe.", color: "text-slate-400" },
+            { title: "THE RADIUM GIRLS (PART 3)", body: "However, the women soon began developing horrific bone diseases. When they sought medical help, the massive corporation actively covered up the truth, silenced doctors, and blamed the women.", color: "text-slate-400" },
+            { title: "THE RADIUM GIRLS (PART 4)", body: "Refusing to be silenced, a small group of the dying women sued the corporation, enduring brutal public smear campaigns and agonizing pain to testify in court.", color: "text-slate-400" },
+            { title: "THE RADIUM GIRLS (PART 5)", body: "Ultimately, they won their lawsuit shortly before their deaths. While it didn't save their lives, their victory completely transformed U.S. labor laws, protecting millions of future workers.", color: "text-slate-400" },
+            { title: "DECONSTRUCTION", body: "Let's apply the Advanced SWBST framework.", color: "text-white" },
+            { title: "S: SOMEBODY", body: "Who is the core subject?<br><br><span class='text-blue-400 font-bold'>The female factory workers (The Radium Girls)</span>", color: "text-white" },
+            { title: "W: WANTED", body: "What was their abstract desire?<br><br><span class='text-violet-400 font-bold'>To earn a safe living, and later, to expose the truth.</span>", color: "text-white" },
+            { title: "B: BUT", body: "What was the complex conflict?<br><br><span class='text-red-400 font-bold'>They were fatally poisoned, and a powerful corporation covered it up.</span>", color: "text-white" },
+            { title: "S: SO", body: "What was their strategic sacrifice?<br><br><span class='text-amber-400 font-bold'>They fought a grueling, public legal battle while actively dying.</span>", color: "text-white" },
+            { title: "T: THEN", body: "What was the bittersweet result?<br><br><span class='text-emerald-400 font-bold'>They sacrificed their lives to win justice and permanently change U.S. labor laws.</span>", color: "text-white" },
+            { title: "THE FINAL SYNTHESIS", body: "Now, we weave those high-level concepts into ONE dense, academic sentence.", color: "text-white" },
+            { title: "ADVANCED SUMMARY", body: "<span class='text-blue-400'>The Radium Girls</span> wanted <span class='text-violet-400'>to earn a safe living</span>, but <span class='text-red-400'>were poisoned by a corrupt corporation</span>, so <span class='text-amber-400'>they fought a brutal legal battle while dying</span>, and ultimately <span class='text-emerald-400'>sacrificed their lives to win justice and permanently change U.S. labor laws.</span>", color: "text-white" },
+            { title: "ANALYSIS", body: "Notice the difference? The sentence is thicker. The vocabulary is sharper. There is no 'fluff'.", color: "text-slate-300" },
+            { title: "YOUR TURN", body: "You are about to transition to your Google Sheet Worksheet. You have 5 practice texts and 3 assignments.", color: "text-white" },
+            { title: "THE EXPECTATION", body: "I do not want to see 'He wanted a book.' I want to see 'He sought forbidden knowledge.' Elevate your vocabulary.", color: "text-violet-400" },
+            { title: "RULE 1", body: "Read the passage completely. Then read it again. Do not touch the keyboard until you fully understand the text.", color: "text-amber-400" },
+            { title: "RULE 2", body: "Find the complex 'But'. What is the REAL problem? Is it a person, a law, or an emotion?", color: "text-amber-400" },
+            { title: "RULE 3", body: "Your final summary MUST be a complete, grammatically perfect sentence.", color: "text-amber-400" },
+            { title: "THE ANTI-CHEAT SYSTEM", body: "The system is still active. If you copy and paste text from the passage into your answer box, the system will detect it, delete your answer, and flag your sheet.", color: "text-red-500" },
+            { title: "NO EXCUSES", body: "You are entirely capable of doing this at a high level. Prove it.", color: "text-slate-300" },
+            { title: "END OF PRESENTATION", body: "Close this window. Open your Advanced Google Sheet. You have 60 minutes. Begin.", color: "text-violet-500" }
+        ];
+
+        let currentIndex = 0;
+        const titleEl = document.createElement('h1');
+        const bodyEl = document.createElement('p');
+        const container = document.getElementById('slide-container');
+        const counter = document.getElementById('slide-counter');
+        const bar = document.getElementById('progress-bar');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        titleEl.className = "text-5xl md:text-7xl font-black mb-8 tracking-tight uppercase";
+        bodyEl.className = "text-2xl md:text-4xl leading-relaxed text-slate-300 font-medium max-w-3xl mx-auto";
+        container.appendChild(titleEl);
+        container.appendChild(bodyEl);
+
+        function updateSlide() {
+            container.classList.remove('slide-enter');
+            void container.offsetWidth; // trigger reflow
+            container.classList.add('slide-enter');
+
+            const slide = slides[currentIndex];
+            titleEl.textContent = slide.title;
+            titleEl.className = `text-5xl md:text-7xl font-black mb-8 tracking-tight uppercase ${slide.color || 'text-white'}`;
+            bodyEl.innerHTML = slide.body;
+
+            counter.textContent = `${currentIndex + 1} / ${slides.length}`;
+            bar.style.width = `${((currentIndex + 1) / slides.length) * 100}%`;
+
+            btnPrev.disabled = currentIndex === 0;
+            if (currentIndex === slides.length - 1) {
+                btnNext.textContent = "FINISH";
+                btnNext.classList.remove('bg-violet-600', 'hover:bg-violet-500');
+                btnNext.classList.add('bg-emerald-600', 'hover:bg-emerald-500', 'shadow-emerald-900/50');
+            } else {
+                btnNext.textContent = "NEXT \u2192";
+                btnNext.classList.add('bg-violet-600', 'hover:bg-violet-500');
+                btnNext.classList.remove('bg-emerald-600', 'hover:bg-emerald-500', 'shadow-emerald-900/50');
+            }
+        }
+
+        btnPrev.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateSlide();
+            }
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (currentIndex < slides.length - 1) {
+                currentIndex++;
+                updateSlide();
+            }
+        });
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>
